@@ -2,20 +2,20 @@ import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Agregator {
 
+    private static final String SPLIT_REGEX = "[\\s@&.,?$+-]+";
     private String textPath;
-
     private String stopwordsPath;
 
     public Agregator(String textPath, String stopwordsPath) {
@@ -23,15 +23,12 @@ public class Agregator {
         this.stopwordsPath = stopwordsPath;
     }
 
-    private List<String> readTokens(String fileName) throws IOException {
-        List<String> tokens = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new FileReader(fileName));
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            line = line.toLowerCase();
-            tokens.addAll(Arrays.asList(line.split("[\\s@&.,?$+-]+")));
-        }
-        return tokens;
+    private List<String> readTokens(String filepath) throws IOException {
+        return Files.lines(Paths.get(filepath))
+            .map(String::toLowerCase)
+            .map(line -> line.split(SPLIT_REGEX))
+            .flatMap(Stream::of)
+            .collect(Collectors.toList());
     }
 
     private Map<String, Long> aggregate(List<String> textTokens, List<String> stopwords) {
