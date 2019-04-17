@@ -1,10 +1,12 @@
+package wordcount;
+
 import static java.text.MessageFormat.format;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class App {
+public class WordCountApp {
 
     public static void main(String[] args) throws IOException {
 
